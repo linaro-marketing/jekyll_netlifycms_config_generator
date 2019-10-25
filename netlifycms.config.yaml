@@ -1,0 +1,111 @@
+# Jekyll NetlifyCMS Config Generator
+# ----------------------------------
+# This file describes the relation between your theme
+# and the netlfiycms config file that is generated.
+# ----------------------------------
+
+# Jekyll Layouts
+# ----------------------------------
+# Specify the layouts of your theme and their
+# corresponding example page. The example page
+# should contain all possible frontmatter values that
+# the layout can process on build.
+# ----------------------------------
+layouts:
+    # Name of the Jekyll Layout
+  - name: page
+    # Path to the template page
+    template: "netlifycms_gen/page.md"
+  - name: post
+    template: "netlifycms_gen/post.md"
+# Jekyll Global Frontmatter
+# ----------------------------------
+# Specify the path to a gen template that lists global
+# frontmatter values that can be added to any page
+# regardless of the layout they are using
+# E.g title/description can be added to both of the above
+# layouts
+global_front_matter_template: "netlifycms_gen/global_front_matter.md"
+# NetlifyCMS Settings
+# ----------------------------------
+# This section allows you to specify any other global netlifycms
+# settings to add by default.
+# ----------------------------------
+cms_settings:
+  backend:
+    name: github
+    repo: linaro/website
+    branch: develop
+    open_authoring: true
+  publish_mode: editorial_workflow
+  logo_url: https://www.linaro.org/assets/images/content/Linaro-Logo.svg
+  site_url: https://staging.linaro.org
+  display_url: https://staging.linaro.org
+  show_preview_links: true
+  slug:
+    encoding: "ascii"
+    clean_accents: true
+    sanitize_replacement: "-"
+  media_folder: "assets/images/content"
+# NetlfiyCMS Collections
+# ----------------------------------
+# This array will generate netlifycms collections based on
+# your predefined template layouts.
+# ----------------------------------
+cms_collections:
+  # NetlifyCMS directory collection
+  # Adds the config for a specific directory in your Jekyll
+  # site e.g "_pages or _documentation"
+  -
+    # Collection Type
+    type: directory
+    # layout to include for the collection
+    layouts: page
+    # Collection settings
+    # Add any netlifycms collection settings here
+    collection_settings:
+      # Collection Path
+      folder: "_pages"
+      # Collection Label
+      label: "Pages"
+      # Editor Preview toggle for netlfiycms
+      editor:
+        preview: true
+      # Preview Path
+      preview_path: "{{slug}}"
+      # Slug
+      slug: "{{permalink}}"
+  -
+    # Collection Type
+    type: directory
+    # layout to include for the collection
+    layouts: page
+    # Collection settings
+    # Add any netlifycms collection settings here
+    collection_settings:
+      # Collection Path
+      folder: "_pages"
+      # Collection Label
+      label: "Pages"
+      # Editor Preview toggle for netlfiycms
+      editor:
+        preview: true
+      # Preview Path
+      preview_path: "{{slug}}"
+      # Slug
+      slug: "{{permalink}}"
+  -
+    # Collection Type
+    type: data_files
+    # Collection settings
+    # Add any netlifycms collection settings here
+    collection_settings:
+      label: "Website Settings"
+      name: "config"
+      editor:
+        preview: false
+    # List the data files that would like to be able to edit
+    files:
+      - "_data/nav.yml"
+      - "_data/footer.yml"
+      - "_data/universal_nav.yml"
