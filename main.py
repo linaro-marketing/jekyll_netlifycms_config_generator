@@ -1,6 +1,7 @@
 import argparse
 import yaml
 from slugify import slugify
+import datetime
 
 class JekyllNetlifyCMSGen:
     def __init__(self, site_path, config_file_name):
@@ -16,9 +17,10 @@ class JekyllNetlifyCMSGen:
         self.config_file_path = "{}/{}".format(
             self.jekyll_site_path, self.config_file_name)
 
+        self.generated_yaml_fields = []
+
         # Load the config
         self.generator_config = self.load_yaml_file(self.config_file_path)
-
 
         # CMS default widgets
         self.netlifycms_widget_base = {
@@ -48,36 +50,67 @@ class JekyllNetlifyCMSGen:
         with open(output_file_path, "w") as yaml_out_file:
             yaml.dump(dictionary, yaml_out_file, default_flow_style=False)
 
-    def create_widget(self, yaml_object, yaml_key):
+    def create_widget(self, yaml_object, yaml_object_key):
         """Create a netlifycms yaml widget given a yaml_object + key"""
-        if isinstance(yaml_object, list):
-            widget_type = "list"
-        elif isinstance(yaml_object, str):
-            widget_type = "string"
+        print("Creating a widget - object - ", yaml_object)
+        print("Creating a widget - key - ", yaml_object_key)
+        if isinstance(yaml_object, str):
+            widget = self.netlifycms_widget_base
+            widget["label"] = yaml_object_key.capitalize()
+            widget["name"] = slugify(yaml_object_key)
+            widget["widget"] = "string"
         elif isinstance(yaml_object, int):
-            widget_type = "number"
+            widget = self.netlifycms_widget_base
+            widget["label"] = yaml_object_key.capitalize()
+            widget["name"] = slugify(yaml_object_key)
+            widget["widget"] = "number"
         elif isinstance(yaml_object, bool):
-            widget_type = "boolean"
+            widget = self.netlifycms_widget_base
+            widget["label"] = yaml_object_key.capitalize()
+            widget["name"] = slugify(yaml_object_key)
+            widget["widget"] = "boolean"
+        elif isinstance(yaml_object, datetime.datetime):
+            widget = self.netlifycms_widget_base
+            widget["label"] = yaml_object_key.capitalize()
+            widget["name"] = slugify(yaml_object_key)
+            widget["widget"] = "boolean"
         else:
-            widget_type = "unknown"
-
-        widget = self.netlifycms_widget_base
-        widget["label"] = yaml_key.capitalize()
-        widget["name"] = slugify(yaml_key)
-        widget["widget"] = widget_type
-
+            widget = None
         return widget
 
-    def get_cms_widgets(self, yaml_object):
+    def get_cms_widgets(self, yaml_object, generated_list=[], yaml_object_key=False, dictionary=True):
         """ Recursive function to get cms_widgets """
-        gen_yaml = []
-        for yaml_key in yaml_object:
-            if isinstance(yaml_object[yaml_key], dict):
-                widget = self.get_cms_widgets(yaml_object[yaml_key])
-            else:
-                widget = self.create_widget(yaml_object[yaml_key], yaml_key)
-            gen_yaml.append(widget)
-        return gen_yaml
+        print(yaml_object)
+        if dictionary:
+            for each in yaml_object:
+                dictionary = True if isinstance(each, dict) else False
+                if dictionary:
+                    widget_list = self.get_cms_widgets(yaml_object[each], generated_list, each, dictionaryState)
+                else:
+
+        else:
+            widget = self.create_widget(yaml_object)
+            generated_list.append(widget)
+            return generated_list
+
+#    print("Processing dictionary...")
+#             for sub_yaml_object in yaml_object:
+#                 print("sub yaml object - ",sub_yaml_object)
+#                 input()
+#                 sub_list = self.get_cms_widgets(yaml_object[sub_yaml_object], generated_list, sub_yaml_object)
+#                 generated_list.append(sub_list)
+#         # elif isinstance(yaml_object, list):
+#         #     print("Processing list...")
+#         #     print(yaml_object[0])
+#         #     input()
+#         #     for field in yaml_object[0]:
+#         #         self.get_cms_widgets(field)
+#         #         self.generated_yaml_fields.append(widget)
+#         else:
+#             print("Processing individual widget...")
+#             widget = self.create_widget(yaml_object, yaml_object_key)
+#             print("Generated widget ", widget)
+#             generated_list.append(widget)
 
     def get_cms_config_from_yaml(self, yaml_object):
         """
@@ -85,8 +118,9 @@ class JekyllNetlifyCMSGen:
         or a block of frontmatter and return the corresponding
         netlifycms config.yml section
         """
-        generated_yaml_fields = self.get_cms_widgets(yaml_object)
-        return generated_yaml_fields
+        generated_yaml = self.get_cms_widgets(yaml_object, [], yaml_object_key=False, dictionary=True)
+        print(generated_yaml)
+        return self.generated_yaml_fields
 
     def process_data_files_collection(self, collection):
         """
