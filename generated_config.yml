@@ -1,0 +1,81 @@
+backend:
+  branch: develop
+  name: github
+  open_authoring: true
+  repo: linaro/website
+collections:
+- editor:
+    preview: true
+  fields:
+  - &id001
+    label: Items
+    name: items
+    required: 'false'
+    widget: list
+  - *id001
+  - *id001
+  - *id001
+  - *id001
+  - *id001
+  - *id001
+  folder: _posts
+  label: Posts
+  preview_path: '{{slug}}'
+  slug: '{{permalink}}'
+- editor:
+    preview: true
+  fields:
+  - *id001
+  - *id001
+  - *id001
+  - *id001
+  - *id001
+  - - *id001
+    - *id001
+    - *id001
+    - - - *id001
+        - *id001
+        - *id001
+      - *id001
+  - *id001
+  folder: _pages
+  label: Pages
+  preview_path: '{{slug}}'
+  slug: '{{permalink}}'
+- editor:
+    preview: false
+  files:
+  - fields:
+    - *id001
+    - *id001
+    - - *id001
+      - *id001
+    - *id001
+    file: _data/nav.yml
+    label: Website Navigation
+    name: navigation
+  - fields:
+    - *id001
+    - - *id001
+      - *id001
+      - *id001
+    file: _data/footer.yml
+    label: Footer
+    name: footer
+  - fields:
+    - *id001
+    file: _data/universal_nav.yml
+    label: Universal Navigation
+    name: universal_nav
+  label: Website Settings
+  name: config
+display_url: https://staging.linaro.org
+logo_url: https://www.linaro.org/assets/images/content/Linaro-Logo.svg
+media_folder: assets/images/content
+publish_mode: editorial_workflow
+show_preview_links: true
+site_url: https://staging.linaro.org
+slug:
+  clean_accents: true
+  encoding: ascii
+  sanitize_replacement: '-'
