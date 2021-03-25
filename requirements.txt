@@ -1,2 +1,2 @@
 python-frontmatter==0.4.5
-PyYAML==5.1.2
+PyYAML==5.4
